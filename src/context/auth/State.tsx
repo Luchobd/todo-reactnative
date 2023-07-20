@@ -1,50 +1,39 @@
-import React, { useReducer } from "react";
-import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from "axios";
-
-import AuthContext, { AuthContextType } from "./Context";
-import { AuthRuducer } from "./Reducer";
-import { POST_LOGIN, POST_REGISTER } from "../types";
-
-import { Auth } from "../../interfaces/auth.interface";
+import React, { useState } from "react";
+import AuthContext from "./Context";
+import { registerRequest } from "../../api/auth";
 import { User, UserRegister } from "../../interfaces/user.interface";
 
-interface InitialState {
-  auth: string;
-  user: string;
-}
-
-interface Props {
+type Props = {
   children: JSX.Element | JSX.Element[];
-}
-
-// const initialState: any = {
-//   auth: "",
-//   user: "",
-// };
+};
 
 export const AuthProvider = ({ children }: Props) => {
-  const initialState: any = {
-    auth: "",
-    user: "",
-  };
+  const [user, setUser] = useState(null);
+  const [auth, setAuth] = useState(undefined);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [state, dispatch] = useReducer<any>(AuthRuducer, initialState);
-
-  const postAuthRegister = async (payload: InitialState) => {
+  const signup = async (user: User) => {
     try {
-      const resp: AxiosResponse = await axios.post(`http://10.0.2.2:3000/auth/register`,payload);
-      return resp;
+      const response = await registerRequest(user);
+      setUser(response.data);
+      setIsAuthenticated(true);
     } catch (error) {
       console.log(error);
     }
   };
-  const postAuthLogin = async (payload: Auth) => {
+  const login = (userDate: React.SetStateAction<undefined>) => {
     try {
-      const resp: AxiosResponse = await axios.post(
-        `http://10.0.2.2:3000/auth/login`,
-        payload
-      );
-      return resp;
+      setAuth(userDate);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const logout = () => {
+    try {
+      setAuth(undefined);
+      setIsAuthenticated(false);
     } catch (error) {
       console.log(error);
     }
@@ -53,9 +42,12 @@ export const AuthProvider = ({ children }: Props) => {
   return (
     <AuthContext.Provider
       value={{
-        state,
-        postAuthRegister,
-        postAuthLogin,
+        signup,
+        user,
+        isAuthenticated,
+        auth,
+        login,
+        logout,
       }}
     >
       {children}

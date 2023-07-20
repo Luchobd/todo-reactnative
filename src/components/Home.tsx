@@ -1,13 +1,14 @@
 import React, { useContext } from "react";
 import { View, Text } from "react-native";
 import AuthContext from "../context/auth/Context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Home() {
   const test = useContext(AuthContext);
-  console.log(test);
+  // console.log("ESTOY AQUI",test);
   return (
-    <View>
+    <SafeAreaView>
       <Text>Home</Text>
-    </View>
+    </SafeAreaView>
   );
 }

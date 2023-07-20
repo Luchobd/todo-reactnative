@@ -1,19 +1,17 @@
-import React, {useContext} from "react";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import AuthProvider from "./src/context/auth/State";
-import Home from "./src/components/Home";
-
-
+import { Navigation } from "./src/navigation/Navigation";
 
 export default function App() {
   return (
     <AuthProvider>
-      <View style={styles.container}>
-        <Text>Esta funcionando correctamente... {"\n"}Creando ContextApi</Text>
-        <Home/>
-        <StatusBar style="auto" />
-      </View>
+    <NavigationContainer>
+      <StatusBar style="light" />
+      <Navigation />
+    </NavigationContainer>
     </AuthProvider>
   );
 }

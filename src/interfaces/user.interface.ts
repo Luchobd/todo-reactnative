@@ -1,10 +1,14 @@
-import { Auth } from "./auth.interface";
+import { Login } from "./auth.interface";
 
-export interface UserRegister {
-  User: User[];
+export interface User extends Login {
+  username: string
+  firstname: string;
+  lastname: string;
 }
 
-export interface User extends Auth {
-  name: string;
-  description: string;
+export interface UserRegister extends Login {
+  username: string
+  firstname: string;
+  lastname: string;
+  repeatPassword: string;
 }

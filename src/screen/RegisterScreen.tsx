@@ -1,22 +1,22 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
-  Button,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useForm, Controller } from "react-hook-form";
+
+import AuthContext from "../context/auth/Context";
 import { FormInput } from "../components/FormInput";
 import { stylesGlobal } from "../theme/global";
-
-import { useForm, Controller } from "react-hook-form";
-import AuthContext from "../context/auth/Context";
+import { useSeePassword } from "../hooks/useSeePassword";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useSeePassword } from "../hooks/useSeePassword";
 
 type FormData = {
   firstname: string;
@@ -28,7 +28,14 @@ type FormData = {
 };
 
 export const RegisterScreen = () => {
-  const { textPassword, seePassword, textPassword2, seePassword2, iconPassword, iconPassword2 } = useSeePassword();
+  const {
+    textPassword,
+    seePassword,
+    textPassword2,
+    seePassword2,
+    seePasswordIcon,
+    seePasswordIcon2,
+  } = useSeePassword();
 
   const navigation: any = useNavigation();
   const { signup, isAuthenticated } = useContext(AuthContext);
@@ -51,13 +58,27 @@ export const RegisterScreen = () => {
     });
 
     if (isAuthenticated) {
-      return navigation.navigate("LoginScreen");
+      return Alert.alert(
+        "✅ Congratulations",
+        "Your user has been registered correctly",
+        [{ text: "OK", onPress: () => navigation.navigate("LoginScreen") }]
+      );
     }
   };
 
   return (
     <SafeAreaView style={stylesGlobal.globalBackground}>
-      <Button title="Home" onPress={() => navigation.navigate("HomeScreen")} />
+      <TouchableOpacity
+        onPress={() => navigation.navigate("HomeScreen")}
+        style={{ top: 20, width: 50, height: 50 }}
+      >
+        <Ionicons
+          name="arrow-undo"
+          size={40}
+          color="#A448FF"
+          style={{ position: "relative" }}
+        />
+      </TouchableOpacity>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{
@@ -168,7 +189,7 @@ export const RegisterScreen = () => {
             </View>
             <View style={styles.inputContent}>
               <Ionicons
-                name={"eye"}
+                name={seePasswordIcon}
                 size={24}
                 color="#A448FF"
                 style={{ position: "absolute", right: 10, top: 50, zIndex: 9 }}
@@ -202,7 +223,7 @@ export const RegisterScreen = () => {
             </View>
             <View style={styles.inputContent}>
               <Ionicons
-                name={"eye"}
+                name={seePasswordIcon2}
                 size={24}
                 color="#A448FF"
                 style={{ position: "absolute", right: 10, top: 50, zIndex: 9 }}

@@ -69,7 +69,7 @@ export const RegisterScreen = () => {
   return (
     <SafeAreaView style={stylesGlobal.globalBackground}>
       <TouchableOpacity
-        onPress={() => navigation.navigate("HomeScreen")}
+        onPress={() => navigation.goBack()}
         style={{ top: 20, width: 50, height: 50 }}
       >
         <Ionicons

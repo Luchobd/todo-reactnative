@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Alert,
 } from "react-native";
 import { FormInput } from "../components/FormInput";
 import { useNavigation } from "@react-navigation/native";
@@ -38,8 +39,6 @@ export const LoginScreen = () => {
     typeof auth === "object" && navigation.navigate("HomeScreen");
   }, [auth]);
 
-  
-
   const onSubimit = async (data: FormData) => {
     await signin(data);
   };
@@ -47,17 +46,6 @@ export const LoginScreen = () => {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#1e1e1e" }}>
       <View style={styles.container}>
-        {/* <TouchableOpacity
-        onPress={() => navigation.navigate("HomeScreen")}
-        style={{ position: "absolute", top: 20, left: 20, zIndex: 9 }}
-      >
-        <Ionicons
-          name="arrow-undo"
-          size={40}
-          color="#A448FF"
-          style={{ position: "relative" }}
-        />
-      </TouchableOpacity> */}
         <View style={styles.containerImage}>
           <Image
             source={require("../assets/Login-Header.png")}

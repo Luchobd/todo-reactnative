@@ -1,17 +1,18 @@
-import { createContext, useContext } from "react";
-// import { Auth } from "../../interfaces/auth.interface";
-import { User, UserRegister } from "../../interfaces/user.interface";
+import { createContext } from "react";
+import { User } from "../../interfaces/user.interface";
+import { Login } from "../../interfaces/auth.interface";
 
 export type AuthContextType = {
   user: User | null;
   signup: (user: User) => Promise<void>;
   isAuthenticated: boolean;
   auth: string | undefined;
-  login: (userDate: React.SetStateAction<undefined>) => void;
+  signin: (userDate: Login) => Promise<void>;
   logout: () => void;
+  tokenLogin: (token: string) => void;
+  getToken: string | null;
 };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
-
 
 export default AuthContext;

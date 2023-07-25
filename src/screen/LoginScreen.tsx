@@ -1,36 +1,172 @@
-import React from "react";
-import { View, Text, StyleSheet, TextInput, Image, Button } from "react-native";
+import React, { useContext, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 import { FormInput } from "../components/FormInput";
 import { useNavigation } from "@react-navigation/native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+import { useForm, Controller } from "react-hook-form";
+import { useSeePassword } from "../hooks/useSeePassword";
+import AuthContext from "../context/auth/Context";
+
+type FormData = {
+  email: string;
+  password: string;
+};
 
 export const LoginScreen = () => {
   const navigation: any = useNavigation();
-  return (
-    <View style={styles.container}>
-      <Button
-        title="Home"
-        onPress={() => navigation.navigate("HomeScreen")}
-      />
-      <View style={styles.containerImage}>
-        <Image
-          source={require("../assets/Login-Header.png")}
-          style={styles.image}
-        />
-      </View>
 
-      <View style={styles.contentText}>
-        <Text style={styles.title}>Login</Text>
-        <View style={styles.subTitle}>
-          <Text style={styles.subTitleNormal}>Login with your account</Text>
-          <Text style={styles.subTitleBold}>Take Note</Text>
+  const { signin, auth, tokenLogin } = useContext(AuthContext);
+
+  const { seePasswordIconLogin, seePasswordLogin, textPasswordLogin } =
+    useSeePassword();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  useEffect(() => {
+    typeof auth === "object" && navigation.navigate("HomeScreen");
+  }, [auth]);
+
+  
+
+  const onSubimit = async (data: FormData) => {
+    await signin(data);
+  };
+
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: "#1e1e1e" }}>
+      <View style={styles.container}>
+        {/* <TouchableOpacity
+        onPress={() => navigation.navigate("HomeScreen")}
+        style={{ position: "absolute", top: 20, left: 20, zIndex: 9 }}
+      >
+        <Ionicons
+          name="arrow-undo"
+          size={40}
+          color="#A448FF"
+          style={{ position: "relative" }}
+        />
+      </TouchableOpacity> */}
+        <View style={styles.containerImage}>
+          <Image
+            source={require("../assets/Login-Header.png")}
+            style={styles.image}
+          />
+        </View>
+
+        <View style={styles.contentText}>
+          <Text style={styles.title}>Login</Text>
+          <View style={styles.subTitle}>
+            <Text style={styles.subTitleNormal}>Login with your account</Text>
+            <Text style={styles.subTitleBold}>Take Note</Text>
+          </View>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={{ marginBottom: 40 }}>
+            <Controller
+              control={control}
+              name="email"
+              rules={{
+                required: "Enter an email address.",
+                pattern: {
+                  message: "Please enter a valid email address.",
+                  value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <FormInput
+                  title="Email"
+                  placeholder="Email"
+                  keyboardType={"email-address"}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+            {errors.email?.message && (
+              <Text style={styles.errorText}>{errors.email.message}</Text>
+            )}
+          </View>
+          <View style={{ marginBottom: 40 }}>
+            <Ionicons
+              name={seePasswordIconLogin}
+              size={24}
+              color="#A448FF"
+              style={{ position: "absolute", right: 10, top: 50, zIndex: 9 }}
+              onPress={textPasswordLogin}
+            />
+            <Controller
+              control={control}
+              name="password"
+              rules={{
+                required: "Enter a password.",
+              }}
+              render={({ field: { onChange, value } }) => (
+                <FormInput
+                  title="Password"
+                  placeholder="Password"
+                  onChangeText={onChange}
+                  value={value}
+                  secureTextEntry={seePasswordLogin}
+                />
+              )}
+            />
+            {errors.password?.message && (
+              <Text style={styles.errorText}>{errors.password.message}</Text>
+            )}
+          </View>
+        </View>
+        <View style={styles.redirectButtons}>
+          <TouchableOpacity
+            style={styles.redirectButton}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("RegisterScreen")}
+          >
+            <Text style={styles.textButton}>Register</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.redirectButton}
+            activeOpacity={0.8}
+            onPress={handleSubmit(onSubimit)}
+          >
+            <Text style={styles.textButton}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            marginVertical: 10,
+            marginHorizontal: 32,
+          }}
+        >
+          {/* <Text style={{...styles.textButton, fontSize: 12}}>have you forgotten your password?</Text> */}
+          <TouchableOpacity style={{ marginLeft: 4, width: "100%" }}>
+            <Text
+              style={{
+                ...styles.textButton,
+                color: "#A448FF",
+                fontSize: 14,
+                textAlign: "right",
+              }}
+            >
+              Forgot Password?
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
-
-      <View style={styles.formContainer}>
-        <FormInput title="Email" placeholder="Email" />
-        <FormInput title="Password" placeholder="Password" />
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -39,7 +175,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1e1e1e",
   },
   containerImage: {
     width: "100%",
@@ -47,8 +182,9 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    position: "relative",
+    bottom: 0,
+    // height: "40%",
   },
   contentText: {
     width: "100%",
@@ -100,6 +236,33 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontFamily: "Roboto",
     fontSize: 16,
+    fontWeight: "normal",
+  },
+  redirectButtons: {
+    width: "100%",
+    paddingHorizontal: 32,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  redirectButton: {
+    width: "45%",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    backgroundColor: "#A448FF",
+    borderRadius: 10,
+  },
+  textButton: {
+    textAlign: "center",
+    color: "#fff",
+    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  errorText: {
+    marginTop: 5,
+    color: "#ff0000",
+    fontFamily: "Roboto",
+    fontSize: 14,
     fontWeight: "normal",
   },
 });

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import AuthContext from "./Context";
-import { registerRequest } from "../../api/auth";
-import { User, UserRegister } from "../../interfaces/user.interface";
+import { loginRequest, registerRequest } from "../../api/auth";
+import { User } from "../../interfaces/user.interface";
+import { Login } from "../../interfaces/auth.interface";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Props = {
   children: JSX.Element | JSX.Element[];
@@ -11,6 +13,7 @@ export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState(null);
   const [auth, setAuth] = useState(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [getToken, setGetToken] = useState(null);
 
   const signup = async (user: User) => {
     try {
@@ -21,19 +24,35 @@ export const AuthProvider = ({ children }: Props) => {
       console.log(error);
     }
   };
-  const login = (userDate: React.SetStateAction<undefined>) => {
+
+  const signin = async (auth: Login) => {
     try {
-      setAuth(userDate);
-      setIsAuthenticated(true);
+      const response = await loginRequest(auth);
+      console.log(response.data);
+      await AsyncStorage.setItem("token", response.data.token);
+      setAuth(response.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const logout = () => {
+  const tokenLogin = async () => {
     try {
-      setAuth(undefined);
+      const token: any = await AsyncStorage.getItem("token");
+      if (token) {
+        setGetToken(token);
+      }
+      console.log("SOY TOKEN", token);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
       setIsAuthenticated(false);
+      setGetToken(null);
     } catch (error) {
       console.log(error);
     }
@@ -46,8 +65,10 @@ export const AuthProvider = ({ children }: Props) => {
         user,
         isAuthenticated,
         auth,
-        login,
+        signin,
         logout,
+        tokenLogin,
+        getToken,
       }}
     >
       {children}

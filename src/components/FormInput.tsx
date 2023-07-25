@@ -5,8 +5,8 @@ import React from "react";
 interface Props {
   title: string;
   placeholder: string;
-  onChangeText: (text: string) => void;
-  value: string;
+  onChangeText?: (text: string) => void;
+  value?: string;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions | undefined;
 }
@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
   },
   inputEmailandPassword: {
-    // marginBottom: 40,
     paddingHorizontal: 10,
     paddingVertical: 15,
     borderColor: "#A448FF",

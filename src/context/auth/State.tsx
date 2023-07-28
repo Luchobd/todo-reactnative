@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import AuthContext from "./Context";
-import { loginRequest, registerRequest } from "../../api/auth";
+import {
+  forgotPasswordRequest,
+  loginRequest,
+  registerRequest,
+  sendChangePassRequest,
+} from "../../api/auth";
 import { User } from "../../interfaces/user.interface";
 import { Login } from "../../interfaces/auth.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
+import { Change } from "../../interfaces/change.interface";
 
 type Props = {
   children: JSX.Element | JSX.Element[];
@@ -11,9 +18,11 @@ type Props = {
 
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState(null);
+  const [sendEmail, setSendEmail] = useState(null);
   const [auth, setAuth] = useState(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [getToken, setGetToken] = useState(null);
+  const [changeResp, setChangeResp] = useState(null);
 
   const signup = async (user: User) => {
     try {
@@ -26,11 +35,18 @@ export const AuthProvider = ({ children }: Props) => {
   };
 
   const signin = async (auth: Login) => {
+    console.log("Login", auth);
     try {
       const response = await loginRequest(auth);
-      console.log(response.data);
-      await AsyncStorage.setItem("token", response.data.token);
-      setAuth(response.data);
+      console.log("LOGIN RESPONSE", response.data);
+      if (response.data === "User not found") {
+        return Alert.alert("Warning", "Check your email please");
+      } else if (response.data === "Password is incorrect") {
+        return Alert.alert("Warning", "Incorrect password");
+      } else {
+        await AsyncStorage.setItem("token", response.data.token);
+        setAuth(response.data);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -58,6 +74,35 @@ export const AuthProvider = ({ children }: Props) => {
     }
   };
 
+  const sendChangePassEmail = async (email: { email: string }) => {
+    try {
+      const response = await sendChangePassRequest(email);
+      setSendEmail(response.data);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const changePassword = async (change: Change) => {
+    try {
+      const response = await forgotPasswordRequest(change);
+      console.log(response.data);
+
+      if (response.data === "Verification code entered is incorrect!") {
+        return Alert.alert(
+          "Warning",
+          "The verification key must be identical to the one you received by email"
+        );
+      }
+
+      setChangeResp(response.data);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -69,6 +114,10 @@ export const AuthProvider = ({ children }: Props) => {
         logout,
         tokenLogin,
         getToken,
+        sendEmail,
+        sendChangePassEmail,
+        changePassword,
+        changeResp,
       }}
     >
       {children}

@@ -1,12 +1,21 @@
 import { View, Text, Button, Modal } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { stylesGlobal } from "../theme/global";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AuthContext from "../context/auth/Context";
 
 export const HomeScreen = () => {
   const navigation: any = useNavigation();
   const [isVisible, setisVisible] = useState(false);
+
+  useEffect(() => {
+    tokenLogin(getToken!)
+  }, [])
+  
+  const {getToken, tokenLogin} = useContext(AuthContext)
+  console.log("HOME", getToken)
+
   return (
     <SafeAreaView style={stylesGlobal.globalBackground}>
       <Text>HomeScreen</Text>

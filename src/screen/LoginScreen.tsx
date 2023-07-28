@@ -23,7 +23,7 @@ type FormData = {
 export const LoginScreen = () => {
   const navigation: any = useNavigation();
 
-  const { signin, auth, tokenLogin } = useContext(AuthContext);
+  const { signin, auth } = useContext(AuthContext);
 
   const { seePasswordIconLogin, seePasswordLogin, textPasswordLogin } =
     useSeePassword();
@@ -38,26 +38,13 @@ export const LoginScreen = () => {
     typeof auth === "object" && navigation.navigate("HomeScreen");
   }, [auth]);
 
-  
-
   const onSubimit = async (data: FormData) => {
     await signin(data);
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#1e1e1e" }}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#1e1e1e" }}>
       <View style={styles.container}>
-        {/* <TouchableOpacity
-        onPress={() => navigation.navigate("HomeScreen")}
-        style={{ position: "absolute", top: 20, left: 20, zIndex: 9 }}
-      >
-        <Ionicons
-          name="arrow-undo"
-          size={40}
-          color="#A448FF"
-          style={{ position: "relative" }}
-        />
-      </TouchableOpacity> */}
         <View style={styles.containerImage}>
           <Image
             source={require("../assets/Login-Header.png")}
@@ -151,14 +138,18 @@ export const LoginScreen = () => {
             marginHorizontal: 32,
           }}
         >
-          {/* <Text style={{...styles.textButton, fontSize: 12}}>have you forgotten your password?</Text> */}
-          <TouchableOpacity style={{ marginLeft: 4, width: "100%" }}>
+          <TouchableOpacity
+            style={{ marginLeft: 4, width: "100%" }}
+            onPress={() => navigation.navigate("SendChangePassEmailScreen")}
+          >
             <Text
               style={{
                 ...styles.textButton,
                 color: "#A448FF",
                 fontSize: 14,
                 textAlign: "right",
+                marginTop: 5,
+                marginBottom: 10,
               }}
             >
               Forgot Password?
@@ -184,7 +175,6 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "relative",
     bottom: 0,
-    // height: "40%",
   },
   contentText: {
     width: "100%",

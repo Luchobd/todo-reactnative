@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Alert,
 } from "react-native";
 import { FormInput } from "../components/FormInput";
 import { useNavigation } from "@react-navigation/native";
@@ -24,7 +23,7 @@ type FormData = {
 export const LoginScreen = () => {
   const navigation: any = useNavigation();
 
-  const { signin, auth, tokenLogin } = useContext(AuthContext);
+  const { signin, auth } = useContext(AuthContext);
 
   const { seePasswordIconLogin, seePasswordLogin, textPasswordLogin } =
     useSeePassword();
@@ -44,7 +43,7 @@ export const LoginScreen = () => {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#1e1e1e" }}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: "#1e1e1e" }}>
       <View style={styles.container}>
         <View style={styles.containerImage}>
           <Image
@@ -139,14 +138,18 @@ export const LoginScreen = () => {
             marginHorizontal: 32,
           }}
         >
-          {/* <Text style={{...styles.textButton, fontSize: 12}}>have you forgotten your password?</Text> */}
-          <TouchableOpacity style={{ marginLeft: 4, width: "100%" }}>
+          <TouchableOpacity
+            style={{ marginLeft: 4, width: "100%" }}
+            onPress={() => navigation.navigate("SendChangePassEmailScreen")}
+          >
             <Text
               style={{
                 ...styles.textButton,
                 color: "#A448FF",
                 fontSize: 14,
                 textAlign: "right",
+                marginTop: 5,
+                marginBottom: 10,
               }}
             >
               Forgot Password?
@@ -172,7 +175,6 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "relative",
     bottom: 0,
-    // height: "40%",
   },
   contentText: {
     width: "100%",

@@ -12,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import { Change } from "../../interfaces/change.interface";
 
+
 type Props = {
   children: JSX.Element | JSX.Element[];
 };
@@ -30,15 +31,13 @@ export const AuthProvider = ({ children }: Props) => {
       setUser(response.data);
       setIsAuthenticated(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const signin = async (auth: Login) => {
-    console.log("Login", auth);
     try {
       const response = await loginRequest(auth);
-      console.log("LOGIN RESPONSE", response.data);
       if (response.data === "User not found") {
         return Alert.alert("Warning", "Check your email please");
       } else if (response.data === "Password is incorrect") {
@@ -48,7 +47,7 @@ export const AuthProvider = ({ children }: Props) => {
         setAuth(response.data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -58,9 +57,8 @@ export const AuthProvider = ({ children }: Props) => {
       if (token) {
         setGetToken(token);
       }
-      console.log("SOY TOKEN", token);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -70,7 +68,7 @@ export const AuthProvider = ({ children }: Props) => {
       setIsAuthenticated(false);
       setGetToken(null);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -80,14 +78,13 @@ export const AuthProvider = ({ children }: Props) => {
       setSendEmail(response.data);
       setIsAuthenticated(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const changePassword = async (change: Change) => {
     try {
       const response = await forgotPasswordRequest(change);
-      console.log(response.data);
 
       if (response.data === "Verification code entered is incorrect!") {
         return Alert.alert(
@@ -99,7 +96,7 @@ export const AuthProvider = ({ children }: Props) => {
       setChangeResp(response.data);
       setIsAuthenticated(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

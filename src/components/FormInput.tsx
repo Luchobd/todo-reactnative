@@ -9,9 +9,10 @@ interface Props {
   value?: string;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions | undefined;
+  look?: any;
 }
 
-export const FormInput = ({ title, placeholder, onChangeText, value, secureTextEntry, keyboardType }: Props) => {
+export const FormInput = ({ title, placeholder, onChangeText, value, secureTextEntry, keyboardType, look }: Props) => {
   return (
     <View>
       <Text style={styles.inputTitle}>{title}</Text>

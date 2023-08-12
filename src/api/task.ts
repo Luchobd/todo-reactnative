@@ -1,6 +1,6 @@
 import { TasksInput } from "../interfaces/tasks.interface";
 
-const API = "http://10.0.2.2:3000/item/";
+const API = "https://back-todo-with-ts.onrender.com/item";
 
 export const getTasks = async () => {
   const response = await fetch(API);

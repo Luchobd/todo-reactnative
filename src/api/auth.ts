@@ -4,7 +4,7 @@ import { Login } from "../interfaces/auth.interface";
 import { Change } from "../interfaces/change.interface";
 
 
-const API = "http://10.0.2.2:3000/auth";
+const API = "https://back-todo-with-ts.onrender.com/auth";
 
 export const registerRequest = async (user: User) => await axios.post(`${API}/register`, user);
 export const loginRequest = async (auth: Login) => await axios.post(`${API}/login`, auth);
